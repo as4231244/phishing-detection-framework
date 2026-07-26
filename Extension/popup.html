@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Phishing Detector AI</title>
+  <style>
+    /* --- Main Styles (mostly unchanged) --- */
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; width: 350px; padding: 15px; background-color: #f4f6f8; margin-bottom: 60px; /* Add space for the assistant button */ }
+    h1 { font-size: 16px; text-align: center; color: #333; margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 15px;}
+    input { width: 95%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; }
+    button { 
+      width: 100%; 
+      padding: 8px; 
+      cursor: pointer; 
+      margin-bottom: 10px; 
+      border: none; 
+      border-radius: 4px; 
+      font-weight: bold; 
+      color: white; 
+      transition: background-color 0.2s; /* Smooth transition on hover */
+    }
+    
+    /* THE FIX: Define specific colors and hover effects for each button */
+    #checkBtn { background-color: #007bff; }
+    #checkBtn:hover { background-color: #0056b3; }
+
+    #expandBtn { background-color: #6c757d; }
+    #expandBtn:hover { background-color: #5a6268; }
+
+    #lockdownBtn { background-color: #dc3545; }
+    /* The JavaScript already handles the green color for the "Disable" state */
+
+    hr { border: none; border-top: 1px solid #eee; margin: 20px 0; }
+    .result-area { margin-top: 10px; font-weight: bold; text-align: center; font-size: 14px; padding: 8px; border-radius: 4px; word-wrap: break-word; }
+    .safe { color: #155724; background-color: #d4edda; }
+    .phishing { color: #721c24; background-color: #f8d7da; }
+    .stats-grid, .stat-box, .number, .label { /* ... unchanged ... */ }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center; }
+    .stat-box { background: #fff; padding: 10px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .stat-box .number { font-size: 24px; font-weight: bold; }
+    .stat-box .label { font-size: 12px; color: #6c757d; }
+    #lifetime-stat { grid-column: span 2; }
+    
+    /* --- NEW CHATBOT STYLES --- */
+    #assistant-icon-btn {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #17a2b8;
+      color: white;
+      font-size: 24px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 999;
+    }
+    #chat-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+    #chat-modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      height: 60%;
+    }
+    #close-chat {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #chat-history {
+      flex-grow: 1;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .chat-message { margin-bottom: 10px; }
+    .user-message { text-align: right; color: #007bff; }
+    .assistant-message { text-align: left; }
+    #chat-input-area { display: flex; }
+    #chat-input { flex-grow: 1; margin: 0 10px 0 0; }
+    #send-chat-btn {
+      width: auto; /* Allow the button to size to its content */
+      flex-shrink: 0;
+      background-color: #17a2b8; /* Teal color to match the assistant icon */
+    }
+    #send-chat-btn:hover {
+      background-color: #117a8b; /* Darker teal for hover */
+    }
+  </style>
+</head>
+<body>
+
+  <!-- The main content of the popup -->
+  <h1>Security Statistics</h1>
+  <div class="stats-grid">
+    <!-- ... stats boxes ... -->
+    <div class="stat-box"><div id="phishingToday" class="number phishing">0</div><div class="label">Phishing Today</div></div>
+    <div class="stat-box"><div id="safeToday" class="number safe">0</div><div class="label">Safe Today</div></div>
+    <div id="lifetime-stat" class="stat-box"><div id="lifetimeTotal" class="number">0</div><div class="label">Total Sites Analyzed</div></div>
+  </div>
+  <hr>
+  <h1>Manual URL Check</h1>
+  <input type="text" id="urlInput" placeholder="Paste a URL to check..."><button id="checkBtn">Check URL</button>
+  <div id="result" class="result-area" style="display: none;"></div>
+  <hr>
+  <h1>URL Expander</h1>
+  <input type="text" id="tinyUrlInput" placeholder="Paste a tiny URL..."><button id="expandBtn">Expand URL</button>
+  <div id="expandResult" class="result-area" style="display: none;"></div>
+  <hr>
+  <h1>Privacy Settings</h1>
+  <button id="lockdownBtn">Engage Privacy Lockdown</button>
+  <div id="lockdownStatus" class="result-area" style="display: none;"></div>
+
+  <!-- The Robot Icon Button -->
+  <button id="assistant-icon-btn">
+  <img src="robo.png" alt="Assistant" width="24" height="24">
+  </button>
+  <!-- The Hidden Chat Modal -->
+  <div id="chat-modal">
+    <div id="chat-modal-content">
+      <span id="close-chat">&times;</span>
+      <h2>Chat with your AI Assistant</h2>
+      <div id="chat-history"></div>
+      <div id="chat-input-area">
+        <input type="text" id="chat-input" placeholder="Ask a question...">
+        <button id="send-chat-btn">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
