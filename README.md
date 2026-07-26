@@ -7,7 +7,7 @@
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange.svg)](https://www.tensorflow.org/)
 [![XGBoost](https://img.shields.io/badge/XGBoost-2.x-red.svg)](https://xgboost.readthedocs.io/)
 [![CNN](https://img.shields.io/badge/CNN-2.x-Green.svg)](https://share.google/X7ZLUDo0Lm8gup8sz)
-[![HTML](https://img.shields.io/badge/HTML-2.x-voilet.svg)](https://share.google/3NwaVhGvalM8JAzMY)
+[![HTML](https://img.shields.io/badge/HTML-2.x-white.svg)](https://share.google/3NwaVhGvalM8JAzMY)
 [![JavaScript](https://img.shields.io/badge/JavaScript-2.x-purple.svg)](https://share.google/mWdP33RdXixkecOix)
 
 ---
