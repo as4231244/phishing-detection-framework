@@ -6,6 +6,7 @@
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/release/python-3120/)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange.svg)](https://www.tensorflow.org/)
 [![XGBoost](https://img.shields.io/badge/XGBoost-2.x-red.svg)](https://xgboost.readthedocs.io/)
+[![CNN](https://img.shields.io/badge/CNN-2.x-Green.svg)](https://share.google/X7ZLUDo0Lm8gup8sz)
 
 ---
 
