@@ -1,0 +1,13 @@
+Flask
+Flask-Cors
+joblib
+numpy
+tensorflow
+waitress
+pandas
+scikit-learn
+xgboost
+scipy
+nltk
+Levenshtein
+requests
